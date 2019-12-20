@@ -16,10 +16,8 @@ FSJS project 2 - List Filter and Pagination
    will only be used inside of a function, then it can be locally 
    scoped to that function.
 ***/
-
-
-
-
+const list = document.querySelectorAll(".student-item");
+const numOfItemsToDisplay = 10;
 /*** 
    Create the `showPage` function to hide all of the items in the 
    list except for the ten you want to show.
@@ -34,8 +32,12 @@ FSJS project 2 - List Filter and Pagination
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
-
-
+const showPage = (list, page) => {
+   let pageList = [];
+   for(let i = 10 * (page - 1); i < (page * numOfItemsToDisplay) - 1; i++){
+      pageList.push(list[i]);
+   }
+}
 
 
 /*** 
