@@ -5,48 +5,61 @@ FSJS project 2 - List Filter and Pagination
    
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
-
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
-const list = document.querySelectorAll(".student-item");
+//global variables
+const studentList = document.querySelectorAll(".student-item");
 const numOfItemsToDisplay = 10;
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
 
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
 const showPage = (list, page) => {
    let pageList = [];
-   for(let i = 10 * (page - 1); i < (page * numOfItemsToDisplay) - 1; i++){
-      pageList.push(list[i]);
+   let firstIndex = (page * 10) - 10;
+   let lastIndex = (page * 10);
+   if (lastIndex >= list.length){
+      lastIndex = list.length;
+   }
+   for(let i = 0; i < list.length; i++){
+      //hide all elements
+      list[i].style.display = 'none';
+      //if the index is within the range of the page, display those elements
+      if(i >= firstIndex && i < lastIndex){
+         list[i].style.display = '';
+      }
    }
 }
 
+const appendPageLinks = (list) => {
+   //calculates the number of pages needed
+   const numOfPages = Math.ceil(studentList.length / numOfItemsToDisplay);
+   //selects the existing main div
+   const pageDiv = document.querySelector(".page");
+   let div = document.createElement('div');
+   div.classList.add("pagination");
+   pageDiv.appendChild(div);
 
-/*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
-***/
-
-
-
-
-
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+   //ul for pagination links
+   const ul = document.createElement("ul");
+   div.appendChild(ul);
+   for(let i = 1; i <= numOfPages; i++){
+      let aTag = document.createElement("a");
+      let li = document.createElement("li");
+      aTag.innerHTML = i;
+      li.appendChild(aTag);
+      ul.appendChild(li);
+   }
+   //add event listener for the buttons
+   const paginationLinks = document.querySelectorAll("div.pagination a");
+   for(let i = 0; i < paginationLinks.length; i++){
+      paginationLinks[i].addEventListener('click', (e) => {
+         for(let i = 0; i < paginationLinks.length; i++){
+            paginationLinks[i].classList.remove("active");
+         }
+         let target = e.target;
+         const page = target.innerHTML;
+         target.classList.add("active");
+         showPage(studentList, page)
+      })
+   }
+}
+//initial call to set the webpage to page one
+showPage(studentList, 1);
+//sets the page numbers. Every other call will be handled by the event listeners.
+appendPageLinks(studentList);
